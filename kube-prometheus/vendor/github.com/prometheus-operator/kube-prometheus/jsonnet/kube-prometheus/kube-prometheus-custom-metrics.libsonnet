@@ -24,9 +24,9 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
             },
             name: {
               matches: '^(.*)_fps',
-              as: "total_fps"
+              as: ""
             },
-            metricsQuery: 'aggregate_fps'
+            metricsQuery: 'avg_over_time(aggregate_fps[15s])'
           },
           {
             seriesQuery: '{__name__=~"^container_.*",container!="POD",namespace!="",pod!=""}',

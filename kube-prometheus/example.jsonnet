@@ -7,7 +7,7 @@ local kp =
   // (import 'kube-prometheus/kube-prometheus-static-etcd.libsonnet') +
   // (import 'kube-prometheus/kube-prometheus-thanos-sidecar.libsonnet') +
   (import 'kube-prometheus/kube-prometheus-custom-metrics.libsonnet') +
-  // (import 'kube-prometheus/kube-prometheus-external-metrics.libsonnet') +
+  (import 'kube-prometheus/kube-prometheus-external-metrics.libsonnet') +
   (import 'kube-prometheus/kube-prometheus-all-namespaces.libsonnet') +
   {
     _config+:: {

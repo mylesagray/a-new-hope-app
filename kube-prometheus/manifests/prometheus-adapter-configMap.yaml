@@ -1,6 +1,19 @@
 apiVersion: v1
 data:
   config.yaml: |-
+    "externalRules":
+    - "metricsQuery": "avg_over_time(aggregate_fps[15s])"
+      "name":
+        "as": ""
+        "matches": "^(.*)_fps"
+      "resources":
+        "overrides":
+          "kubernetes_namespace":
+            "resource": "namespace"
+          "kubernetes_pod":
+            "resource": "pod"
+      "seriesFilters": []
+      "seriesQuery": "aggregate_fps"
     "resourceRules":
       "cpu":
         "containerLabel": "container"
@@ -28,9 +41,9 @@ data:
               "resource": "pod"
       "window": "5m"
     "rules":
-    - "metricsQuery": "aggregate_fps"
+    - "metricsQuery": "avg_over_time(aggregate_fps[15s])"
       "name":
-        "as": "total_fps"
+        "as": ""
         "matches": "^(.*)_fps"
       "resources":
         "overrides":

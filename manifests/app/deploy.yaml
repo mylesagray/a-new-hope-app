@@ -82,9 +82,9 @@ spec:
     kind: Deployment
     name: a-new-hope-worker
   metrics:
-  - type: Pods
-    pods:
-      metricName: aggregate_fps
+  - type: External
+    external:
+      metricName: aggregate
       targetAverageValue: 200
 ---
 apiVersion: monitoring.coreos.com/v1
