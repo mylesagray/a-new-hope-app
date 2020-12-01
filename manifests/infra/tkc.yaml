@@ -1,0 +1,20 @@
+apiVersion: run.tanzu.vmware.com/v1alpha1
+kind: TanzuKubernetesCluster
+metadata:
+  name: endor
+spec:
+  distribution:
+    version: v1.18
+  topology:
+    controlPlane:
+      class: best-effort-xlarge
+      count: 3
+      storageClass: kubernetes-demo-storage
+    workers:
+      class: best-effort-xlarge
+      count: 4
+      storageClass: kubernetes-demo-storage
+  settings:
+    storage:
+      classes: ["kubernetes-demo-storage"]              #Named PVC storage classes
+      defaultClass: kubernetes-demo-storage                     #Default PVC storage class
