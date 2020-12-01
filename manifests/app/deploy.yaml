@@ -85,7 +85,7 @@ spec:
   - type: External
     external:
       metricName: aggregate
-      targetAverageValue: 200
+      targetValue: 200
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
