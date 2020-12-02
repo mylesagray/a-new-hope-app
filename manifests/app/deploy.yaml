@@ -6,7 +6,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: a-new-hope
+  name: a-new-hope-dashboard
   labels:
     app: flower-counter
   namespace: flower-market
@@ -22,10 +22,13 @@ spec:
     spec:
       containers:
       - name: dashboard
-        image: vhojan/a-new-hope-dashboard
+        image: vhojan/a-new-hope-dashboard:latest
         ports:
         - name: http
           containerPort: 80
+        resources:
+          requests:
+            ephemeral-storage: 10M
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -46,15 +49,24 @@ spec:
     spec:
       containers:
       - name: worker
-        image: nginx
-        ports:
-        - name: http
-          containerPort: 80
+        image: vhojan/a-new-hope-worker:latest
+        env:
+          - name: DASHBOARD_FQDN
+            value: "flower-dashboard.flower-market"
+          - name: BATCHES
+            value: "200"
+          - name: PARTIAL_GPU
+            value: "0.5"
+          - name: NUM_GPUS
+            value: "1"
+        resources:
+          requests:
+            ephemeral-storage: 10M
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: flower-service
+  name: flower-dashboard
   labels:
     app: flower-counter
   namespace: flower-market
@@ -75,7 +87,7 @@ metadata:
     app: flower-counter
   namespace: flower-market
 spec:
-  maxReplicas: 10
+  maxReplicas: 4
   minReplicas: 1
   scaleTargetRef:
     apiVersion: apps/v1
@@ -85,7 +97,7 @@ spec:
   - type: External
     external:
       metricName: aggregate
-      targetValue: 200
+      targetValue: 1100
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor

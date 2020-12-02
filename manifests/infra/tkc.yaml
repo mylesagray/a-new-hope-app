@@ -7,11 +7,11 @@ spec:
     version: v1.18
   topology:
     controlPlane:
-      class: best-effort-xlarge
+      class: best-effort-2xlarge
       count: 3
       storageClass: kubernetes-demo-storage
     workers:
-      class: best-effort-xlarge
+      class: best-effort-2xlarge
       count: 4
       storageClass: kubernetes-demo-storage
   settings:
