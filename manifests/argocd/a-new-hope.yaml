@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: a-new-hope
+  namespace: argocd
+spec:
+  destination:
+    namespace: flower-market
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: manifests/app
+    repoURL: https://github.com/mylesagray/a-new-hope-app.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated: {}
+    syncOptions:
+    - CreateNamespace=true

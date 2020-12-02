@@ -6,25 +6,27 @@ Deploy TKC:
 kubectl apply -f manifests/tkc.yaml
 ```
 
-Deploy allow all PSP:
+Install ArgoCD:
 
 ```sh
-kubectl create clusterrolebinding default-tkg-admin-privileged-binding --clusterrole=psp:vmware-system-privileged --group=system:authenticated
+kubectl create ns argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+# Make it externally accessible
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+# Get password
+kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2
 ```
 
-Deploy Prometheus:
+Create ArgoCD application for Prometheus:
 
 ```sh
-cd kube-prometheus
-kubectl create -f manifests/setup
-until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
-kubectl create -f manifests/
+kubectl apply -f argocd/prometheus.yaml
 ```
 
-Deploy app:
+Create ArgoCD application for application:
 
 ```sh
-kubectl apply -f manifests/app/
+kubectl apply -f argocd/a-new-hope.yaml
 ```
 
 Deploy secret containing Docker Hub token for image pulls:
