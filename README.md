@@ -6,9 +6,56 @@ Deploy TKC:
 kubectl apply -f manifests/tkc.yaml
 ```
 
+Create three namespaces:
+
+```sh
+kubectl create ns argocd
+kubectl create ns monitoring
+kubectl create ns flower-market
+```
+
+Deploy secret containing Docker Hub token for image pulls:
+
+```sh
+SECRETNAME=regcred
+UN=username here
+PW=password here
+EMAIL=email here
+
+kubectl create secret docker-registry $SECRETNAME \
+  --docker-username=$UN \
+  --docker-password=$PW \
+  --docker-email=$EMAIL
+
+# Copy secret to other namespaces
+kubectl get secret $SECRETNAME -n default -o yaml \
+| sed s/"namespace: default"/"namespace: argocd"/\
+| kubectl apply --namespace=argocd -f -
+kubectl get secret $SECRETNAME -n default -o yaml \
+| sed s/"namespace: default"/"namespace: monitoring"/\
+| kubectl apply --namespace=monitoring -f -
+kubectl get secret $SECRETNAME -n default -o yaml \
+| sed s/"namespace: default"/"namespace: flower-market"/\
+| kubectl apply --namespace=flower-market -f -
+
+# Apply docker registry creds to each serviceaccount
+kubectl patch serviceaccount -n argocd default \
+  -p "{\"imagePullSecrets\": [{\"name\": \"$SECRETNAME\"}]}"
+
+kubectl patch serviceaccount -n monitoring default \
+  -p "{\"imagePullSecrets\": [{\"name\": \"$SECRETNAME\"}]}"
+
+kubectl patch serviceaccount -n flower-market default \
+  -p "{\"imagePullSecrets\": [{\"name\": \"$SECRETNAME\"}]}"
+```
+
 Install ArgoCD:
 
 ```sh
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+helm install argocd --namespace argocd argo/argo-cd --set global.imagePullSecrets={regcred} --set server.service.type=LoadBalancer
+
 kubectl create ns argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 # Make it externally accessible
@@ -27,24 +74,4 @@ Create ArgoCD application for application:
 
 ```sh
 kubectl apply -f argocd/a-new-hope.yaml
-```
-
-Deploy secret containing Docker Hub token for image pulls:
-
-```sh
-SECRETNAME=regcred
-UN=username here
-PW=password here
-EMAIL=email here
-
-kubectl create secret docker-registry $SECRETNAME \
-  --docker-username=$UN \
-  --docker-password=$PW \
-  --docker-email=$EMAIL
-
-kubectl patch serviceaccount -n monitoring default \
-  -p "{\"imagePullSecrets\": [{\"name\": \"$SECRETNAME\"}]}"
-
-kubectl patch serviceaccount -n flower-market default \
-  -p "{\"imagePullSecrets\": [{\"name\": \"$SECRETNAME\"}]}"
 ```

@@ -35,7 +35,7 @@ kind: Deployment
 metadata:
   name: a-new-hope-worker
   labels:
-    app: flower-counter
+    app: flower-counter-worker
   namespace: flower-market
 spec:
   selector:
@@ -49,11 +49,14 @@ spec:
       containers:
       - name: worker
         image: vhojan/a-new-hope-worker:latest
+        ports:
+        - name: metrics
+          containerPort: 8080
         env:
           - name: DASHBOARD_FQDN
             value: "flower-dashboard.flower-market"
           - name: BATCHES
-            value: "200"
+            value: "2000"
           - name: PARTIAL_GPU
             value: "0.5"
           - name: NUM_GPUS
@@ -78,7 +81,59 @@ spec:
   selector:
     app: a-new-hope-dashboard
 ---
-apiVersion: autoscaling/v2beta1
+apiVersion: v1
+kind: Service
+metadata:
+  name: flower-metrics
+  labels:
+    app: flower-counter-worker
+  namespace: flower-market
+spec:
+  type: LoadBalancer
+  ports:
+    - name: metrics
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: a-new-hope-worker
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: flower-dashboard-fps
+  labels:
+    app: flower-counter-monitor
+  namespace: monitoring
+spec:
+  endpoints:
+    - targetPort: 80
+      interval: 5s
+  namespaceSelector:
+    matchNames:
+    - flower-market
+  selector:
+    matchLabels:
+      app: flower-counter
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: flower-worker-fps
+  labels:
+    app: flower-counter-monitor
+  namespace: monitoring
+spec:
+  endpoints:
+    - targetPort: 8080
+      interval: 5s
+  namespaceSelector:
+    matchNames:
+    - flower-market
+  selector:
+    matchLabels:
+      app: flower-counter-worker
+---
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: flower-autoscaler
@@ -95,23 +150,8 @@ spec:
   metrics:
   - type: External
     external:
-      metricName: aggregate
-      targetValue: 100
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: flower-fps
-  labels:
-    app: flower-counter-monitor
-  namespace: monitoring
-spec:
-  endpoints:
-    - targetPort: 80
-      interval: 5s
-  namespaceSelector:
-    matchNames:
-    - flower-market
-  selector:
-    matchLabels:
-      app: flower-counter
+      metric:
+        name: aggregate
+      target: 
+        type: Value
+        value: 500
