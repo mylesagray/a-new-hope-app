@@ -154,10 +154,14 @@ spec:
     scaleDown:
       stabilizationWindowSeconds: 5
   metrics:
-  - type: Pods
-    pods:
+  - type: Object
+    object:
       metric:
-        name: flowers_per_second
+        name: flowers_per_second_total
+      describedObject:
+        apiVersion: v1
+        kind: Namespace
+        name: flower-market
       target: 
-        type: AverageValue
-        averageValue: '100'
+        type: Value
+        value: '40'

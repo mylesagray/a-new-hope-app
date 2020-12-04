@@ -10,23 +10,23 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
       config+:: {
         rules+: [
           {
-            seriesQuery: 'aggregate_fps',
+            seriesQuery: '{__name__=~"flowers_per_second",namespace!="",pod!=""}',
             seriesFilters: [],
             resources: {
               overrides: {
-                kubernetes_namespace: {
+                namespace: {
                   resource: 'namespace'
                 },
-                kubernetes_pod: {
+                pod: {
                   resource: 'pod'
                 }
               },
             },
             name: {
-              matches: '^(.*)_fps',
-              as: ""
+              matches: '^(.*)',
+              as: "flowers_per_second_total"
             },
-            metricsQuery: 'avg_over_time(aggregate_fps[15s])'
+            metricsQuery: 'sum(avg_over_time(<<.Series>>[15s])) by (<<.GroupBy>>)'
           },
           {
             seriesQuery: '{__name__=~"^container_.*",container!="POD",namespace!="",pod!=""}',

@@ -4,7 +4,7 @@ data:
     "externalRules":
     - "metricsQuery": "avg_over_time(aggregate_fps[15s])"
       "name":
-        "as": ""
+        "as": "total_fps"
         "matches": "^(.*)_fps"
       "resources":
         "overrides":
@@ -41,18 +41,18 @@ data:
               "resource": "pod"
       "window": "5m"
     "rules":
-    - "metricsQuery": "avg_over_time(aggregate_fps[15s])"
+    - "metricsQuery": "sum(avg_over_time(<<.Series>>[15s])) by (<<.GroupBy>>)"
       "name":
-        "as": ""
-        "matches": "^(.*)_fps"
+        "as": "flowers_per_second_total"
+        "matches": "^(.*)"
       "resources":
         "overrides":
-          "kubernetes_namespace":
+          "namespace":
             "resource": "namespace"
-          "kubernetes_pod":
+          "pod":
             "resource": "pod"
       "seriesFilters": []
-      "seriesQuery": "aggregate_fps"
+      "seriesQuery": "{__name__=~\"flowers_per_second\",namespace!=\"\",pod!=\"\"}"
     - "metricsQuery": "sum(rate(<<.Series>>{<<.LabelMatchers>>,container!=\"POD\"}[1m])) by (<<.GroupBy>>)"
       "name":
         "as": ""
