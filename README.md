@@ -55,16 +55,24 @@ kubectl patch serviceaccount -n flower-market default \
   -p "{\"imagePullSecrets\": [{\"name\": \"$SECRETNAME\"}]}"
 ```
 
-Deploy Prometheus:
+Install ArgoCD:
 
 ```sh
-kubectl apply -f kube-prometheus/manifests/setup
-
-kubectl apply -f kube-prometheus/manifests
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+helm install argocd --namespace argocd argo/argo-cd --set global.imagePullSecrets\[0\].name=regcred --set server.service.type=LoadBalancer
+# Get password
+kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2
 ```
 
-Deploy Application:
+Create ArgoCD application for Prometheus:
 
 ```sh
-kubectl apply -f manifests/app
+kubectl apply -f argocd/prometheus.yaml
+```
+
+Create ArgoCD application for application:
+
+```sh
+kubectl apply -f argocd/a-new-hope.yaml
 ```

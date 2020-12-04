@@ -157,4 +157,4 @@ spec:
         name: aggregate
       target: 
         type: Value
-        value: 10000
+        value: '10000'
