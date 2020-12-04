@@ -6,6 +6,12 @@ Deploy TKC:
 kubectl apply -f manifests/tkc.yaml
 ```
 
+Apply Pod Security Policy:
+
+```sh
+kubectl apply -f manifests/app/psp-policy.yaml
+```
+
 Create three namespaces:
 
 ```sh
@@ -49,29 +55,16 @@ kubectl patch serviceaccount -n flower-market default \
   -p "{\"imagePullSecrets\": [{\"name\": \"$SECRETNAME\"}]}"
 ```
 
-Install ArgoCD:
+Deploy Prometheus:
 
 ```sh
-helm repo add argo https://argoproj.github.io/argo-helm
-helm repo update
-helm install argocd --namespace argocd argo/argo-cd --set global.imagePullSecrets={regcred} --set server.service.type=LoadBalancer
+kubectl apply -f kube-prometheus/manifests/setup
 
-kubectl create ns argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-# Make it externally accessible
-kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
-# Get password
-kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2
+kubectl apply -f kube-prometheus/manifests
 ```
 
-Create ArgoCD application for Prometheus:
+Deploy Application:
 
 ```sh
-kubectl apply -f argocd/prometheus.yaml
-```
-
-Create ArgoCD application for application:
-
-```sh
-kubectl apply -f argocd/a-new-hope.yaml
+kubectl apply -f manifests/app
 ```
