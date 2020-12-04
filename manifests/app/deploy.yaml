@@ -150,11 +150,14 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: a-new-hope-worker
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 5
   metrics:
-  - type: External
-    external:
+  - type: Pods
+    pods:
       metric:
-        name: aggregate
+        name: flowers_per_second
       target: 
-        type: Value
-        value: '10000'
+        type: AverageValue
+        averageValue: '100'
