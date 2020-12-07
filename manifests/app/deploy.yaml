@@ -33,7 +33,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: a-new-hope-worker
+  name: a-new-hope-wookie
   labels:
     app: flower-counter-worker
   namespace: flower-market
@@ -47,7 +47,7 @@ spec:
         app: a-new-hope-worker
     spec:
       containers:
-      - name: worker
+      - name: wookie
         image: vhojan/a-new-hope-worker:latest
         ports:
         - name: metrics
@@ -87,7 +87,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: flower-metrics
+  name: wookie-metrics
   labels:
     app: flower-counter-worker
   namespace: flower-market
@@ -139,7 +139,7 @@ spec:
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: flower-autoscaler
+  name: wookie-scaler
   labels:
     app: flower-counter
   namespace: flower-market
@@ -149,7 +149,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: a-new-hope-worker
+    name: a-new-hope-wookie
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 5
