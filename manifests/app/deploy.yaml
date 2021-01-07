@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: dashboard
-        image: vhojan/a-new-hope-dashboard:latest
+        image: mylesagray/a-new-hope-dashboard:latest
         ports:
         - name: http
           containerPort: 80
@@ -48,7 +48,7 @@ spec:
     spec:
       containers:
       - name: wookie
-        image: vhojan/a-new-hope-worker:latest
+        image: mylesagray/a-new-hope-worker:latest
         ports:
         - name: metrics
           containerPort: 8080
