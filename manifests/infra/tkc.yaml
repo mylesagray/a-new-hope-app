@@ -10,10 +10,20 @@ spec:
       class: best-effort-2xlarge
       count: 3
       storageClass: vsan-default-storage-policy
+      volumes:
+        - name: etcd
+          mountPath: /var/lib/etcd
+          capacity:
+            storage: 20Gi
     workers:
       class: best-effort-2xlarge
       count: 4
       storageClass: vsan-default-storage-policy
+      volumes:
+        - name: containerd
+          mountPath: /var/lib/containerd
+          capacity:
+            storage: 40Gi  
   settings:
     storage:
       classes: ["vsan-default-storage-policy"]              #Named PVC storage classes
