@@ -9,12 +9,12 @@ spec:
     controlPlane:
       class: best-effort-2xlarge
       count: 3
-      storageClass: kubernetes-demo-storage
+      storageClass: vsan-default-storage-policy
     workers:
       class: best-effort-2xlarge
       count: 4
-      storageClass: kubernetes-demo-storage
+      storageClass: vsan-default-storage-policy
   settings:
     storage:
-      classes: ["kubernetes-demo-storage"]              #Named PVC storage classes
-      defaultClass: kubernetes-demo-storage                     #Default PVC storage class
+      classes: ["vsan-default-storage-policy"]              #Named PVC storage classes
+      defaultClass: vsan-default-storage-policy                     #Default PVC storage class

@@ -23,12 +23,12 @@ kubectl create ns flower-market
 Deploy secret containing Docker Hub token for image pulls:
 
 ```sh
-SECRETNAME=regcred
-UN=username here
-PW=password here
-EMAIL=email here
+export SECRETNAME=regcred
+export UN=username here
+export PW=password here
+export EMAIL=email here
 
-kubectl create secret docker-registry $SECRETNAME \
+kubectl create secret docker-registry -n default $SECRETNAME \
   --docker-username=$UN \
   --docker-password=$PW \
   --docker-email=$EMAIL
