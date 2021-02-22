@@ -23,36 +23,27 @@ kubectl create ns flower-market
 Deploy secret containing Docker Hub token for image pulls:
 
 ```sh
-export SECRETNAME=regcred
-export UN=username here
-export PW=password here
-export EMAIL=email here
+export UN=usernamehere
+export PW=passwordhere
+export EMAIL=emailhere
 
-kubectl create secret docker-registry -n default $SECRETNAME \
+kubectl create secret docker-registry docker-creds \
+  --namespace kube-system \
   --docker-username=$UN \
   --docker-password=$PW \
   --docker-email=$EMAIL
+```
 
-# Copy secret to other namespaces
-kubectl get secret $SECRETNAME -n default -o yaml \
-| sed s/"namespace: default"/"namespace: argocd"/\
-| kubectl apply --namespace=argocd -f -
-kubectl get secret $SECRETNAME -n default -o yaml \
-| sed s/"namespace: default"/"namespace: monitoring"/\
-| kubectl apply --namespace=monitoring -f -
-kubectl get secret $SECRETNAME -n default -o yaml \
-| sed s/"namespace: default"/"namespace: flower-market"/\
-| kubectl apply --namespace=flower-market -f -
+Create reg-cred operator to sync imagepullsecrets across namespaces (because, Docker...)
 
-# Apply docker registry creds to each serviceaccount
-kubectl patch serviceaccount -n argocd default \
-  -p "{\"imagePullSecrets\": [{\"name\": \"$SECRETNAME\"}]}"
+```sh
+kubectl apply -f https://raw.githubusercontent.com/mylesagray/home-cluster-gitops/master/manifests/registry-creds/manifest.yaml
+```
 
-kubectl patch serviceaccount -n monitoring default \
-  -p "{\"imagePullSecrets\": [{\"name\": \"$SECRETNAME\"}]}"
+Create ClusterPullSecret CR
 
-kubectl patch serviceaccount -n flower-market default \
-  -p "{\"imagePullSecrets\": [{\"name\": \"$SECRETNAME\"}]}"
+```sh
+kubectl apply -f manifests/app/regcred-crd.yaml
 ```
 
 Deploy Prometheus:
