@@ -1,0 +1,29 @@
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: wookie-scaler
+  labels:
+    app: flower-counter
+  namespace: flower-market
+spec:
+  maxReplicas: 4
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: a-new-hope-wookie
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 5
+  metrics:
+  - type: Object
+    object:
+      metric:
+        name: flowers_per_second_total
+      describedObject:
+        apiVersion: v1
+        kind: Namespace
+        name: flower-market
+      target: 
+        type: Value
+        value: '500'

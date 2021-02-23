@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: a-new-hope-wookie
+  labels:
+    app: flower-counter-worker
+  namespace: flower-market
+spec:
+  selector:
+    matchLabels:
+      app: a-new-hope-worker
+  template:
+    metadata:
+      labels:
+        app: a-new-hope-worker
+    spec:
+      containers:
+      - name: wookie
+        image: mylesagray/a-new-hope-worker:latest
+        ports:
+        - name: metrics
+          containerPort: 8080
+        env:
+          - name: BATCHES
+            value: "2000"
+          - name: PARTIAL_GPU
+            value: "0.5"
+          - name: NUM_GPUS
+            value: "1"
+        resources:
+          requests:
+            ephemeral-storage: 10M
+            memory: "16Gi"
+          limits:
+            memory: "16Gi"
+            cpu: "4000m"
