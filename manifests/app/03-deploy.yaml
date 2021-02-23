@@ -17,6 +17,7 @@ spec:
       containers:
       - name: wookie
         image: mylesagray/a-new-hope-worker:latest
+        imagePullPolicy: Always
         ports:
         - name: metrics
           containerPort: 8080
