@@ -6,33 +6,6 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: a-new-hope-dashboard
-  labels:
-    app: flower-counter
-  namespace: flower-market
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: a-new-hope-dashboard
-  template:
-    metadata:
-      labels:
-        app: a-new-hope-dashboard
-    spec:
-      containers:
-      - name: dashboard
-        image: mylesagray/a-new-hope-dashboard:latest
-        ports:
-        - name: http
-          containerPort: 80
-        resources:
-          requests:
-            ephemeral-storage: 10M
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: a-new-hope-wookie
   labels:
     app: flower-counter-worker
@@ -53,8 +26,6 @@ spec:
         - name: metrics
           containerPort: 8080
         env:
-          - name: DASHBOARD_FQDN
-            value: "flower-dashboard.flower-market"
           - name: BATCHES
             value: "2000"
           - name: PARTIAL_GPU
@@ -66,23 +37,7 @@ spec:
             ephemeral-storage: 10M
             memory: "16Gi"
           limits:
-            memory: "16Gi"            
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: flower-dashboard
-  labels:
-    app: flower-counter
-  namespace: flower-market
-spec:
-  type: LoadBalancer
-  ports:
-    - name: http
-      port: 80
-      targetPort: 80
-  selector:
-    app: a-new-hope-dashboard
+            memory: "16Gi"           
 ---
 apiVersion: v1
 kind: Service
@@ -99,24 +54,6 @@ spec:
       targetPort: 8080
   selector:
     app: a-new-hope-worker
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: flower-dashboard-fps
-  labels:
-    app: flower-counter-monitor
-  namespace: monitoring
-spec:
-  endpoints:
-    - targetPort: 80
-      interval: 5s
-  namespaceSelector:
-    matchNames:
-    - flower-market
-  selector:
-    matchLabels:
-      app: flower-counter
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor

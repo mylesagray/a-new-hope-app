@@ -9,7 +9,7 @@ kubectl apply -f manifests/tkc.yaml
 Apply Pod Security Policy:
 
 ```sh
-kubectl apply -f manifests/app/psp-policy.yaml
+kubectl apply -f manifests/setup-k8s/psp.yaml
 ```
 
 Create three namespaces:
@@ -43,12 +43,14 @@ kubectl apply -f https://raw.githubusercontent.com/mylesagray/home-cluster-gitop
 Create ClusterPullSecret CR
 
 ```sh
-kubectl apply -f manifests/app/regcred-crd.yaml
+kubectl apply -f manifests/setup-k8s/regcred-crd.yaml
 ```
 
 Deploy Prometheus:
 
 ```sh
+kubectl apply -f manifests/setup-k8s/prometheus-rbac.yaml
+
 kubectl apply -f kube-prometheus/manifests/setup
 
 kubectl apply -f kube-prometheus/manifests
