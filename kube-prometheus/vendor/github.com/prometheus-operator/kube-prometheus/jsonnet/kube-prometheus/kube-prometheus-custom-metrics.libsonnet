@@ -26,7 +26,7 @@ local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
               matches: '^(.*)',
               as: "flowers_per_second_total"
             },
-            metricsQuery: 'sum(avg_over_time(<<.Series>>[15s])) by (<<.GroupBy>>)'
+            metricsQuery: '1/sum(avg_over_time(<<.Series>>[15s])) by (<<.GroupBy>>)'
           },
           {
             seriesQuery: '{__name__=~"^container_.*",container!="POD",namespace!="",pod!=""}',

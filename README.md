@@ -46,6 +46,20 @@ Create ClusterPullSecret CR
 kubectl apply -f manifests/setup-k8s/regcred-crd.yaml
 ```
 
+Define custom metric:
+
+```sh
+# Metric for this app is defined at 
+# kube-prometheus/vendor/kube-prometheus/kube-prometheus-custom-metrics.libsonnet Lines 12-30
+```
+
+Build Prometheus:
+
+```sh
+cd kube-prometheus/
+./build.sh
+```
+
 Deploy Prometheus:
 
 ```sh
@@ -60,4 +74,10 @@ Deploy Application:
 
 ```sh
 kubectl apply -f manifests/app
+```
+
+The HPA algorithm to calculate desired scale is:
+
+```sh
+desiredReplicas = ceil[currentReplicas * ( currentMetricValue / desiredMetricValue )]
 ```

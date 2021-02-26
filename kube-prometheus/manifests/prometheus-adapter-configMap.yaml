@@ -41,7 +41,7 @@ data:
               "resource": "pod"
       "window": "5m"
     "rules":
-    - "metricsQuery": "sum(avg_over_time(<<.Series>>[15s])) by (<<.GroupBy>>)"
+    - "metricsQuery": "1/sum(avg_over_time(<<.Series>>[15s])) by (<<.GroupBy>>)"
       "name":
         "as": "flowers_per_second_total"
         "matches": "^(.*)"
