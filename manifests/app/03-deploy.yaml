@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: wookie
-        image: mylesagray/a-new-hope-worker:latest
+        image: harbor-repo.vmware.com/dockerhub-proxy-cache/mylesagray/a-new-hope-worker:65c1af4
         imagePullPolicy: Always
         ports:
         - name: metrics
@@ -31,7 +31,27 @@ spec:
         resources:
           requests:
             ephemeral-storage: 10M
-            memory: "16Gi"
-          limits:
-            memory: "16Gi"
-            cpu: "4000m"
+          #   memory: "16Gi"
+          # limits:
+          #   memory: "16Gi"
+          #   cpu: "4000m"
+            # bitfusion.io/gpu-num: 1 
+            # bitfusion.io/gpu-percent: 50
+        volumeMounts:
+        - name: config-files
+          mountPath: /etc/bitfusion
+        - name: certificate  
+          mountPath: /etc/bitfusion/tls  
+      volumes:
+      - name: config-files
+        projected:
+          defaultMode: 0640
+          sources:
+          - secret:
+              name: bitfusion-client-secret-client.yml
+          - secret:
+              name: bitfusion-client-secret-servers.conf
+      - name: certificate
+        secret:
+          secretName: bitfusion-client-secret-ca.crt
+          defaultMode: 0640
