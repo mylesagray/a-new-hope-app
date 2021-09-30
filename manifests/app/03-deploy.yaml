@@ -13,45 +13,25 @@ spec:
     metadata:
       labels:
         app: a-new-hope-worker
+      annotations:
+        auto-management/bitfusion: "yes"
+        bitfusion-client/os: "ubuntu20"
+        bitfusion-client/version: "401"
     spec:
       containers:
       - name: wookie
-        image: harbor-repo.vmware.com/dockerhub-proxy-cache/mylesagray/a-new-hope-worker:65c1af4
+        image: harbor-repo.vmware.com/dockerhub-proxy-cache/mylesagray/a-new-hope-worker:d018d89
         imagePullPolicy: Always
+        command: ["python ./a-new-hope-worker/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py --data_format=NCHW --batch_size=32 --model=resnet50 --num_batches=200 --variable_update=replicated --local_parameter_device=gpu  --nodistortions"]
         ports:
         - name: metrics
           containerPort: 8080
         env:
           - name: BATCHES
             value: "2000"
-          - name: PARTIAL_GPU
-            value: "0.5"
-          - name: NUM_GPUS
-            value: "1"
         resources:
           requests:
             ephemeral-storage: 10M
-          #   memory: "16Gi"
-          # limits:
-          #   memory: "16Gi"
-          #   cpu: "4000m"
-            # bitfusion.io/gpu-num: 1 
-            # bitfusion.io/gpu-percent: 50
-        volumeMounts:
-        - name: config-files
-          mountPath: /etc/bitfusion
-        - name: certificate  
-          mountPath: /etc/bitfusion/tls  
-      volumes:
-      - name: config-files
-        projected:
-          defaultMode: 0640
-          sources:
-          - secret:
-              name: bitfusion-client-secret-client.yml
-          - secret:
-              name: bitfusion-client-secret-servers.conf
-      - name: certificate
-        secret:
-          secretName: bitfusion-client-secret-ca.crt
-          defaultMode: 0640
+          limits:
+            bitfusion.io/gpu-amount: 1 
+            bitfusion.io/gpu-percent: 100
