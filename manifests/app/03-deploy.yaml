@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: wookie
-        image: harbor-repo.vmware.com/dockerhub-proxy-cache/mylesagray/a-new-hope-worker:d018d89
+        image: harbor-repo.vmware.com/dockerhub-proxy-cache/mylesagray/a-new-hope-worker:latest
         imagePullPolicy: Always
         command: ["python ./a-new-hope-worker/scripts/tf_cnn_benchmarks/tf_cnn_benchmarks.py --data_format=NCHW --batch_size=32 --model=resnet50 --num_batches=200 --variable_update=replicated --local_parameter_device=gpu  --nodistortions"]
         ports:
