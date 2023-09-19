@@ -8,35 +8,45 @@
           "subdir": "grafana"
         }
       },
-      "version": "release-0.1"
+      "version": "5698c8940b6dadca3f42107b7839557bc041761f"
     },
     {
       "source": {
         "git": {
-          "remote": "https://github.com/coreos/etcd",
-          "subdir": "Documentation/etcd-mixin"
+          "remote": "https://github.com/grafana/grafana",
+          "subdir": "grafana-mixin"
         }
       },
-      "version": "master"
+      "version": "v10.1.0",
+      "name": "grafana-mixin"
     },
     {
       "source": {
         "git": {
-          "remote": "https://github.com/coreos/prometheus-operator",
+          "remote": "https://github.com/etcd-io/etcd",
+          "subdir": "contrib/mixin"
+        }
+      },
+      "version": "60051be9908649b1a0f2d000dc75b3bd0822d53c"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/prometheus-operator/prometheus-operator",
           "subdir": "jsonnet/prometheus-operator"
         }
       },
-      "version": "release-0.42"
+      "version": "v0.67.1"
     },
     {
       "source": {
         "git": {
-          "remote": "https://github.com/ksonnet/ksonnet-lib",
-          "subdir": ""
+          "remote": "https://github.com/prometheus-operator/prometheus-operator",
+          "subdir": "jsonnet/mixin"
         }
       },
-      "version": "master",
-      "name": "ksonnet"
+      "version": "v0.67.1",
+      "name": "prometheus-operator-mixin"
     },
     {
       "source": {
@@ -45,7 +55,7 @@
           "subdir": ""
         }
       },
-      "version": "release-0.5"
+      "version": "63337d921db856bbcd2e91814a0ac90c250410d6"
     },
     {
       "source": {
@@ -54,7 +64,7 @@
           "subdir": "jsonnet/kube-state-metrics"
         }
       },
-      "version": "release-1.9"
+      "version": "v2.9.2"
     },
     {
       "source": {
@@ -63,7 +73,7 @@
           "subdir": "jsonnet/kube-state-metrics-mixin"
         }
       },
-      "version": "release-1.9"
+      "version": "v2.9.2"
     },
     {
       "source": {
@@ -81,8 +91,37 @@
           "subdir": "documentation/prometheus-mixin"
         }
       },
-      "version": "release-2.20",
+      "version": "v2.46.0",
       "name": "prometheus"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/prometheus/alertmanager",
+          "subdir": "doc/alertmanager-mixin"
+        }
+      },
+      "version": "v0.26.0",
+      "name": "alertmanager"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/pyrra-dev/pyrra.git",
+          "subdir": "config/crd/bases"
+        }
+      },
+      "version": "v0.6.4"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/thanos-io/thanos",
+          "subdir": "mixin"
+        }
+      },
+      "version": "v0.32.2",
+      "name": "thanos-mixin"
     }
   ],
   "legacyImports": true
